@@ -44,17 +44,6 @@ async function main() {
   // console.log(tx2);
   console.log(ethers.utils.formatEther(BN));
 
-
-  // const provider = ethers.getDefaultProvider("http://127.0.0.1:8545");
-
-  // const bal1 = await provider
-  //   .getBalance("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
-  //   .then((balance) => {
-  //     const balanceInEth = ethers.utils.formatEther(balance);
-  //     console.log(`balance: ${balanceInEth} ETH`);
-  //   });
-  // console.log(bal1);
-
   console.log("This Contract was deployed to:", TetherDeployed.address);
   console.log("This Contract was deployed to:", await TetherDeployed.name());
 
