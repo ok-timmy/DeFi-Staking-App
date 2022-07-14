@@ -3,7 +3,7 @@ const {
   loadFixture,
 } = require("@nomicfoundation/hardhat-network-helpers");
 const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
-const { expect } = require("chai");
+const { expect } = require("chai").use(require('chai-as-promised')).should();
 
 describe("Lock", function () {
   // We define a fixture to reuse the same setup in every test.
