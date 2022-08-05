@@ -51,7 +51,7 @@ contract RWD {
         uint256 _value
     ) public returns (bool success) {
         require(_value <= balanceOf[msg.sender]);
-        require(_value <= allowance[_from][msg.sender]);
+        require(_value <= allowance[_from][msg.sender], "Insufficient Balance");
         balanceOf[_to] += _value;
         balanceOf[_from] -= _value;
         allowance[msg.sender][_from] = _value;

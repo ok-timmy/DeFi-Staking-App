@@ -39,6 +39,7 @@ contract Tether {
 
     function approve(address _spender, uint256 _value)
         public
+        payable
         returns (bool success)
     {
         allowance[msg.sender][_spender] = _value;
@@ -49,7 +50,7 @@ contract Tether {
         address _from,
         address _to,
         uint256 _value
-    ) public returns (bool success) {
+    ) payable public returns (bool success) {
         require(_value <= balanceOf[msg.sender]);
         require(_value <= allowance[_from][msg.sender]);
         balanceOf[_to] += _value;
