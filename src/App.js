@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Image, InputGroup, Row } from "react-bootstrap";
 import { Card, Container } from "react-bootstrap";
 import TopNavbar from "./components/Navbar";
@@ -6,11 +6,53 @@ import Tether from "./Assets/Tether-USDT-Logo.png";
 import Token from "./Assets/RewardToken.png";
 import Eth from "./Assets/eth-logo.png";
 import Footer from "./components/Footer";
+import Web3 from "web3";
+import tether from "./contracts/Tether.sol/Tether.json";
+import rwd from "./contracts/RWD.sol/RWD.json";
 
 function App() {
+
+  
+  const [account, setAccount] = useState();
+  const [tether, setTether] = useState({});
+  const [rwd, setRwd] = useState({})
+  const [decentralBank, setDecentralBank] = useState({})
+  const [tetherBalance, setTetherBalance] = useState(0);
+  const [rwdBalance, setRwdbalance] = useState(0);
+  const [stakingBalance, setStakingBalance] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadWeb3 = async() =>{
+    if(window.ethereum) {
+      window.web3 = new Web3(window.ethereum);
+      await window.ethereum.enable();
+    }else if(window.web3) {
+      window.web3 = new Web3(window.web3.currentProvider);
+    }else {
+      alert("Please Install Metamask!!");
+    }
+  }
+
+  const loadBlockchainData = async() => {
+    const web3 = window.web3;
+    const account1 = await web3.eth.getAccounts();
+    setAccount(account1)
+    console.log(account1);
+    const networkId = await web3.eth.net.getId();
+    // console.log(networkId, "Network ID");
+    // const tetherData = await tether.networks[networkId]
+    // console.log(tetherData);
+  } 
+
+
+  useEffect(() => {
+   loadWeb3();
+   loadBlockchainData()
+  }, [])
+  
   return (
     <>
-      <TopNavbar />
+      <TopNavbar account = {account}/>
       <Container className="mt-5">
         {" "}
         <Card className="shadow p-4 my-3">
