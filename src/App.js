@@ -7,8 +7,8 @@ import Token from "./Assets/RewardToken.png";
 import Eth from "./Assets/eth-logo.png";
 import Footer from "./components/Footer";
 import Web3 from "web3";
-import tether from "./contracts/Tether.sol/Tether.json";
-import rwd from "./contracts/RWD.sol/RWD.json";
+// import tether from "./contracts/Tether.sol/Tether.json";
+// import rwd from "./contracts/RWD.sol/RWD.json";
 
 function App() {
 
