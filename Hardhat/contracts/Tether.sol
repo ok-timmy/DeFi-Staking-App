@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: MIT-Modern-Variant
 
 pragma solidity >=0.7.0 <0.9.0;
+import "hardhat/console.sol";
 
 contract Tether {
     string public name = "Mock Tether Token";
@@ -25,6 +26,7 @@ contract Tether {
 
     function transfer(address _to, uint256 _value)
         public
+        payable
         returns (bool success)
     {
         //require that the amount to be transferred is less than the balance available
@@ -33,6 +35,7 @@ contract Tether {
         //Transfer the amount
         balanceOf[msg.sender] -= _value;
         balanceOf[_to] += _value;
+        // console.log("Balance of %s to %s Who just receive token ", balanceOf[_to], _to);
         emit Transfer(msg.sender, _to, _value);
         return true;
     }
@@ -51,10 +54,10 @@ contract Tether {
         address _to,
         uint256 _value
     ) payable public returns (bool success) {
-        require(_value <= balanceOf[msg.sender]);
-        require(_value <= allowance[_from][msg.sender]);
-        balanceOf[_to] += _value;
+        require(_value <= balanceOf[_from], "Insufficient Balance");
+        require(_value <= allowance[_from][_from], "No Allowance for this action");
         balanceOf[_from] -= _value;
+        balanceOf[_to] += _value;
         allowance[msg.sender][_from] = _value;
         emit Transfer(_from, _to, _value);
         return true;

@@ -65,39 +65,74 @@ describe("Mock Tether Deployment", async () => {
     );
     const decentralBank = await DecentralBankDeployed.deployed();
     // Transfer 1 Million Tokens to the Decentral Bank
-    await rwd.transfer(
-      DecentralBankDeployed.address,
-      "1000000000000000000000000"
-    );
+    await rwd.transfer(decentralBank.address, "1000000000000000000000000");
 
-    //Transfer 100 Tokens to the Customer
-    await tether.transfer(
-      "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-      "100000000000000000000"
-    );
-    const BN1 = await tether.balanceOf(
-      "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
-    );
+    console.log("Successfully transferred 1 Million tokens to decentral bank");
 
-    // console.log(BN1);
-    console.log("BN1",ethers.utils.formatEther(BN1));
-    const BN2 = await rwd.balanceOf(decentralBank.address);
-    console.log("BN2",ethers.utils.formatEther(BN2))
+    console.log("    ");
 
-    assert.equal(100.0, ethers.utils.formatEther(BN1));
-    assert.equal(ethers.utils.formatEther(BN2), 1000000);
     const [owner, spender] = await ethers.getSigners();
+    //Transfer 1000 Tokens to the Customer
+    await tether.transfer(spender.address, "1000000000000000000000");
+    console.log(
+      "Successfully called tether transfer function and 100 tether tokens have been trnasferred to the Customer"
+    );
+
+    const BN1 = await tether.balanceOf(spender.address);
+    const BN3 = await tether.balanceOf(owner.address);
+    console.log(
+      "BN1 :",
+      ethers.utils.formatEther(BN1),
+      "Tether token for Spender"
+    );
+    console.log(
+      "BN3 :",
+      ethers.utils.formatEther(BN3),
+      "Tether token for Owner"
+    );
+    const BN2 = await rwd.balanceOf(decentralBank.address);
+    console.log(
+      "BN2",
+      ethers.utils.formatEther(BN2),
+      "Reward Tokens in the Decentral bank"
+    );
+
+    assert.equal(1000, ethers.utils.formatEther(BN1));
+    assert.equal(ethers.utils.formatEther(BN2), 1000000);
+
+    console.log(decentralBank.address);
     console.log(owner.address);
     console.log(spender.address);
-    // console.log(await tether.balanceOf(owner.address));
     // const signer = tether.signer;
     // console.log(signer);
-    await tether
-      .approve(decentralBank.address, "10000000000000000000", spender.address );
-    await decentralBank
-      .depositTokens("10000000000000000000",  owner.address);
-    // const bal = await decentralBank.stakingBalance["0x70997970C51812dc3A010C7d01b50e0d17dc79C8"];
-    // assert.equal(bal, 10);
+    await tether.approve(spender.address, "10000000000000000000");
+    await tether.approve(owner.address, "10000000000000000000");
+    console.log("Tether approve function successful");
+    console.log(
+      ethers.utils.formatEther(await tether.balanceOf(spender.address)),
+      "Tether Tokens as Spender Balance"
+    );
+    console.log(
+      ethers.utils.formatEther(await tether.balanceOf(owner.address)),
+      "Tether tokens as Owner Balance"
+    );
+
+    console.log("calling decentralbank deposit token function");
+    await decentralBank.depositTokens("10000000000000000000");
+
+
+    const bal = await decentralBank.stakingBalance(owner.address);
+    assert.equal(ethers.utils.formatEther(bal), 10.0);
+    
+    // await decentralBank.unstakeTokens();
+    // const bal2 = await decentralBank.stakingBalance(owner.address);
+    // assert.equal(ethers.utils.formatEther(bal2), 0.0);
+    
+    
+    await decentralBank.issueTokens();
+    const bal3 = await rwd.balanceOf(owner.address);
+    // assert.equal(ethers.utils.formatEther(bal3), 0.0);
+    console.log(ethers.utils.formatEther(bal3));
   });
 
   // it("Check Staking for Customer", async () => {

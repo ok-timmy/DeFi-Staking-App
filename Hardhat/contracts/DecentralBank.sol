@@ -17,14 +17,14 @@ contract DecentralBank {
     mapping(address => bool) public hasStaked;
     mapping(address => bool) public isStaking;
 
-    constructor(RWD _rwd, Tether _tether) {
-        rwd = _rwd;
+    constructor(Tether _tether, RWD _rwd ) {
         tether = _tether;
+        rwd = _rwd;
         owner = msg.sender;
     }
 
     //Staking Function
-    function depositTokens(uint _amount) public payable {
+    function depositTokens(uint256 _amount) public payable {
         require(_amount > 0, "Amount Cannot be 0 or Less");
         // Transfer tether token to this contract address
         tether.transferFrom(msg.sender, address(this), _amount);
