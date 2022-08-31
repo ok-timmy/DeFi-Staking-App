@@ -26,23 +26,23 @@ async function main() {
   await DecentralBankDeployed.deployed();
 
   //Transfer all the RWD tokens to the decentral Bank
-  const tx1 = await rwd.transfer(
-    DecentralBankDeployed.address,
-    "1000000000000000000000000"
-  );
+  //  await rwd.transfer(
+  //   DecentralBankDeployed.address,
+  //   "1000000000000000000000000"
+  // );
 
   //Distribute 100 tokens to the investor
-  const tx2 = await tether.transfer(
-    "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-    "100000000000000000000"
-  );
+  //  await tether.transfer(
+  //   "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+  //   "100000000000000000000"
+  // );
 
-  const BN = await tether.balanceOf(
-    "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
-  );
+  // const BN = await tether.balanceOf(
+  //   "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+  // );
   // console.log(tx1);
   // console.log(tx2);
-  console.log(ethers.utils.formatEther(BN));
+  // console.log(ethers.utils.formatEther(BN));
 
   console.log("This Contract was deployed to:", TetherDeployed.address);
   console.log("This Contract was deployed to:", await TetherDeployed.name());
