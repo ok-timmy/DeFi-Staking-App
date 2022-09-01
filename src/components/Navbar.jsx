@@ -9,7 +9,7 @@ function TopNavbar({account, loadBlockchainData}) {
 
       <Nav.Link><Image src={Bank} alt="Bank Logo"/></Nav.Link>
 
-      <Button variant="info" onClick={()=> loadBlockchainData}>{account ? `${account[0].slice(0, 6)}.....${account[0].slice(36)}` : "Connect Wallet"}</Button>
+      <Button variant="info" onClick={()=> loadBlockchainData}>{account ? `${account.slice(0, 6)}.....${account.slice(36)}` : "Connect Wallet"}</Button>
       </Container>
     </Navbar>
   );

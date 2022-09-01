@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Image, InputGroup, Row } from "react-bootstrap";
-import { Card, Container } from "react-bootstrap";
+import ReactSpinner from "react-bootstrap-spinner";
 import TopNavbar from "./components/Navbar";
-import Tether from "./Assets/Tether-USDT-Logo.png";
-import Token from "./Assets/RewardToken.png";
-import Eth from "./Assets/eth-logo.png";
 import Footer from "./components/Footer";
 import Web3 from "web3";
 import tetherABI from "./truffle_abis/contracts/Tether.json";
 import rwdABI from "./truffle_abis/contracts/RWD.json";
 import decentralBankABI from "./truffle_abis/contracts/DecentralBank.json";
+import Main from "./components/Main";
 
 function App() {
   const [account, setAccount] = useState();
-  const [tether, setTether] = useState();
+  const [tether, setTether] = useState({});
   const [rwd, setRwd] = useState({});
   const [decentralBank, setDecentralBank] = useState({});
   const [tetherBalance, setTetherBalance] = useState(0);
@@ -21,8 +18,8 @@ function App() {
   const [stakingBalance, setStakingBalance] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-
   const loadBlockchainData = async () => {
+    setIsLoading(true);
     const web3 = window.web3;
     const accounts = await web3.eth.getAccounts();
     console.log(accounts);
@@ -48,19 +45,41 @@ function App() {
       decentralBankABI.abi,
       "0xA52853e5c2163571EFD91dD37dba0729bD0fd8Aa"
     );
-    // let tetherBalance = await tetherContract.methods.balanceOf("0x70997970C51812dc3A010C7d01b50e0d17dc79C8").call()
-    let tetherName = await tetherContract.methods.name().call();
-    let tetherSymbol = await tetherContract.methods.symbol().call();
-    let rwdName = await rwdContract.methods.name().call();
-    let rwdSymbol = await rwdContract.methods.symbol().call();
-    let decentralBankName = await decentralBankContract.methods.name().call();
-    // let decentralBankSymbol = await decentralBankContract.methods.symbol().call();
 
-    console.log(tetherContract);
-    console.log(rwdContract);
-    console.log(decentralBankContract);
-    console.log( rwdSymbol, tetherSymbol);
-    console.log(tetherName, rwdName, decentralBankName);
+    setTether(tetherContract);
+    setRwd(rwdContract);
+    setDecentralBank(decentralBankContract);
+
+    setIsLoading(false);
+    let tetherBalances = await tetherContract.methods
+      .balanceOf(accounts[0])
+      .call();
+    setTetherBalance(tetherBalances);
+  };
+
+  const stakeTokens = (amount) => {
+    setIsLoading(true);
+    tether.methods
+      .approve(decentralBank._address, amount)
+      .send({ from: account })
+      .on("transactionHash", (hash) => {
+        decentralBank.methods
+          .depositTokens(amount)
+          .send({ from: account })
+          .on("transactionHash", (hash) => {
+            setIsLoading(false);
+          });
+      });
+  };
+
+  const unstakeTokens = () => {
+    setIsLoading(true);
+    decentralBank.methods
+      .unstakeTokens()
+      .send({ from: account })
+      .on("transactionHash", (hash) => {
+        setIsLoading(false);
+      });
   };
 
   const loadWeb3 = async () => {
@@ -79,69 +98,50 @@ function App() {
     loadBlockchainData();
   }, []);
 
+  console.log(isLoading);
+  console.log(tether);
+  console.log(rwd);
+  console.log(decentralBank);
+
   return (
     <>
       <TopNavbar account={account} loadBlockchainData={loadBlockchainData} />
-      <Container className="mt-5">
-        {" "}
-        <Card className="shadow p-4 my-3">
-          <h1>Welcome, to Decentral Bank</h1>
-          <p className="lead">How Much Would You Like to stake?</p>
-          <InputGroup>
-            <InputGroup.Text>
-              <Image src={Eth} alt="Eth" width={20} height={20} />{" "}
-              <span className="ml-2">USDT</span>
-            </InputGroup.Text>
-            <Form.Control aria-label="Amount" />
-            <Button variant="info">Stake</Button>
-          </InputGroup>
-        </Card>
-      </Container>
-
-      <Container fluid={true} className="px-lg-5">
-        <Row>
-          <Col lg={6} className=" px-lg-5 mb-3">
-            <Card className="my-lg-4 shadow px-5">
-              <Card.Img
-                variant="top"
-                src={Tether}
-                style={{ width: "15rem", height: "15rem" }}
-                className="p-5 mx-auto"
-              />
-
-              <Card.Title className="display-4 mx-auto bg-white pb-4">
-                100.0
-              </Card.Title>
-            </Card>
-          </Col>
-          <Col lg={6} className=" px-lg-5 mb-3">
-            <Card className="my-lg-4 shadow">
-              <Card.Img
-                src={Token}
-                style={{ width: "15rem", height: "15rem" }}
-                className="p-5 mx-auto"
-              />
-
-              <Card.Title className="display-4 mx-auto bg-white pb-4">
-                100.0
-              </Card.Title>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-
-      <Container className="">
-        {" "}
-        <Card className="shadow p-4 my-3">
-          <h6 className="mx-auto display-4">Airdrop</h6>
-          <p className="lead mx-auto">Airdrop Happens In</p>
-          <p className="mx-auto display-4">00:00</p>
-        </Card>
-      </Container>
-      {/* <div>App</div> */}
+      {isLoading ? (
+        <div className="text-center" style={{ minHeight: "100vh" }}>
+          <ReactSpinner type="border" color="info" size="4" />
+        </div>
+      ) : (
+        <Main
+          tetherBalance={tetherBalance}
+          rwdBalance={rwdBalance}
+          stakingBalance={stakingBalance}
+          stakeTokens={stakeTokens}
+          unstakeTokens={unstakeTokens}
+        />
+      )}
       <Footer />
     </>
   );
 }
 
 export default App;
+
+// let tetherSymbol = await tetherContract.methods.symbol().call();
+// let rwdName = await rwdContract.methods.name().call();
+// let rwdSymbol = await rwdContract.methods.symbol().call();
+// let decentralBankName = await decentralBankContract.methods.name().call();
+// let decentralBankStakingBalance = await decentralBankContract.methods
+//   .stakingBalance("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
+//   .call();
+// await tetherContract.methods.transfer("0x70997970C51812dc3A010C7d01b50e0d17dc79C8", 1).call();
+// let bal = await tetherContract.methods.balanceOf("0x70997970C51812dc3A010C7d01b50e0d17dc79C8").call();
+
+// console.log(bal);
+
+// console.log(
+//   rwdSymbol,
+//   tetherSymbol,
+//   tetherBalances,
+//   decentralBankStakingBalance
+// );
+// console.log(tetherName, rwdName, decentralBankName);
