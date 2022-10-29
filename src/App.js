@@ -14,7 +14,7 @@ function App() {
   const [rwd, setRwd] = useState({});
   const [decentralBank, setDecentralBank] = useState({});
   const [tetherBalance, setTetherBalance] = useState(0);
-  const [rwdBalance, setRwdbalance] = useState(0);
+  const [rwdBalance, setRwdBalance] = useState(0);
   const [stakingBalance, setStakingBalance] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -35,15 +35,15 @@ function App() {
     );
     const tetherContract = await new web3.eth.Contract(
       tetherABI.abi,
-      "0x09f9b8E0FfE8CD8b5010453DE716d725b28A9216"
+      "0xE7f384500cd1b782BD1cf50d4f6AB1cA990C3aa2"
     );
     const rwdContract = await new web3.eth.Contract(
       rwdABI.abi,
-      "0x5BDE8FB49F7Ee517Ed1d6bA0d2D0f700C3C21b70"
+      "0x8F5FB0c4835f52B9EFA14126F506F2495FbBc1c9"
     );
     const decentralBankContract = await new web3.eth.Contract(
       decentralBankABI.abi,
-      "0xA52853e5c2163571EFD91dD37dba0729bD0fd8Aa"
+      "0x450BF6b1f61E20b2739E410f5f9f9B3fC381c70c"
     );
 
     setTether(tetherContract);
@@ -55,6 +55,16 @@ function App() {
       .balanceOf(accounts[0])
       .call();
     setTetherBalance(tetherBalances);
+
+    let RWDBalance = await rwdContract.methods
+      .balanceOf(accounts[0])
+      .call();
+    setRwdBalance(RWDBalance);
+
+   let decentralBankBalance = await decentralBankContract.methods
+      .stakingBalance(accounts[0])
+      .call();
+    setStakingBalance(decentralBankBalance);
   };
 
   const stakeTokens = (amount) => {
@@ -98,9 +108,9 @@ function App() {
     loadBlockchainData();
   }, []);
 
-  console.log(isLoading);
-  console.log(tether);
-  console.log(rwd);
+  // console.log(isLoading);
+  // console.log(tether);
+  // console.log(rwd);
   console.log(decentralBank);
 
   return (
@@ -125,23 +135,3 @@ function App() {
 }
 
 export default App;
-
-// let tetherSymbol = await tetherContract.methods.symbol().call();
-// let rwdName = await rwdContract.methods.name().call();
-// let rwdSymbol = await rwdContract.methods.symbol().call();
-// let decentralBankName = await decentralBankContract.methods.name().call();
-// let decentralBankStakingBalance = await decentralBankContract.methods
-//   .stakingBalance("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
-//   .call();
-// await tetherContract.methods.transfer("0x70997970C51812dc3A010C7d01b50e0d17dc79C8", 1).call();
-// let bal = await tetherContract.methods.balanceOf("0x70997970C51812dc3A010C7d01b50e0d17dc79C8").call();
-
-// console.log(bal);
-
-// console.log(
-//   rwdSymbol,
-//   tetherSymbol,
-//   tetherBalances,
-//   decentralBankStakingBalance
-// );
-// console.log(tetherName, rwdName, decentralBankName);

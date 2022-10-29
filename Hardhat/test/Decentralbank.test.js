@@ -100,12 +100,21 @@ describe("Mock Tether Deployment", async () => {
     assert.equal(1000, ethers.utils.formatEther(BN1));
     assert.equal(ethers.utils.formatEther(BN2), 1000000);
 
-    console.log(decentralBank.address);
-    console.log(owner.address);
-    console.log(spender.address);
+    // console.log(decentralBank.address);
+    // console.log(owner.address);
+    // console.log(spender.address);
     // const signer = tether.signer;
     // console.log(signer);
-    await tether.approve(spender.address, "10000000000000000000");
+   const isTetherApproved = await tether.approve(decentralBank.address, "10000000000000000000");
+
+   if(isTetherApproved) {
+    await decentralBank.depositTokens("10000000000000000000")
+    console.log("Deposit token ran properly")
+   } else {
+    console.log("Deposit tokens function could not run properly ")
+   }
+
+
     await tether.approve(owner.address, "10000000000000000000");
     console.log("Tether approve function successful");
     console.log(
@@ -118,7 +127,7 @@ describe("Mock Tether Deployment", async () => {
     );
 
     console.log("calling decentralbank deposit token function");
-    await decentralBank.depositTokens("10000000000000000000");
+    // await decentralBank.depositTokens("10000000000000000000");
 
 
     const bal = await decentralBank.stakingBalance(owner.address);

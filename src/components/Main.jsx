@@ -46,7 +46,8 @@ const Main = ({
               type="button"
               onClick={(e) => {
                 e.preventDefault();
-                const newAmount = Web3.utils.toWei(amount.toString(), "wei");
+                const newAmount = Web3.utils.toWei(amount.toString(), "ether");
+                console.log(newAmount);
                 stakeTokens(newAmount);
               }}
             >
@@ -56,7 +57,9 @@ const Main = ({
           <p className="pt-3">
             Balance: {Web3.utils.fromWei(tetherBalance.toString(), "ether")}
           </p>
-          <Button variant="info" onClick={()=> unstakeTokens()}>Withdraw All Tokens</Button>
+          <Button variant="info" onClick={() => unstakeTokens()}>
+            Withdraw All Tokens
+          </Button>
         </Card>
       </Container>
 
@@ -97,7 +100,8 @@ const Main = ({
               />
 
               <Card.Title className="display-4 mx-auto bg-white pb-4">
-                {Web3.utils.fromWei(rwdBalance.toString(), "ether")}
+                {Web3.utils
+                  .fromWei(rwdBalance.toString(), "ether")}
               </Card.Title>
             </Card>
           </Col>

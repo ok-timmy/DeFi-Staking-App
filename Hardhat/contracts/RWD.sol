@@ -55,8 +55,8 @@ contract RWD {
         // require(_value <= allowance[msg.sender][_from], "Insufficient Balance");
         balanceOf[_to] += _value;
         balanceOf[_from] -= _value;
-        allowance[msg.sender][_from] = _value;
-        // allowance[_from][msg.sender] = _value;
+        // allowance[msg.sender][_from] = _value;
+        allowance[_from][msg.sender] = _value;
         emit Transfer(_from, _to, _value);
         // console.log(balanceOf[_to], balanceOf[_from]);
         return true;

@@ -53,12 +53,12 @@ contract Tether {
         address _from,
         address _to,
         uint256 _value
-    ) payable public returns (bool success) {
+    ) payable public  returns (bool success) {
         require(_value <= balanceOf[_from], "Insufficient Balance");
-        require(_value <= allowance[_from][_from], "No Allowance for this action");
+        require(_value <= allowance[_from][_to], "No Allowance for this action");
         balanceOf[_from] -= _value;
         balanceOf[_to] += _value;
-        allowance[msg.sender][_from] = _value;
+        allowance[_from][msg.sender] = _value;
         emit Transfer(_from, _to, _value);
         return true;
     }
